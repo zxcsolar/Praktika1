@@ -1,3 +1,5 @@
 ls
-cd /home
 ls $HOME
+cd /home
+cd "my folder"
+wrong

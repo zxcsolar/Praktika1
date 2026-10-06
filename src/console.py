@@ -2,6 +2,7 @@ import sys
 import os
 import argparse
 import configparser
+import json
 
 def parse_command(line):
     parts = []
@@ -87,6 +88,25 @@ def get_config_values(config):
 
     return vfs, startup
 
+def default_vfs():
+    return {
+        "name": "root",
+        "type": "directory",
+        "children": []
+    }
+
+
+def load_vfs(path):
+    if not path:
+        return default_vfs()
+
+    try:
+        with open(path, "r", encoding="utf-8") as file:
+            return json.load(file)
+    except (OSError, json.JSONDecodeError):
+        print("VFS load error")
+        return None
+
 def priority(args, config_vfs, config_startup):
     if args.vfs:
         vfs = args.vfs
@@ -118,7 +138,6 @@ def do_comm(parts, commands):
 def cmd(command, args):
     print(command, *args)
 
-
 def run(vfs_name):
     commands = {
         "ls": cmd,
@@ -136,7 +155,6 @@ def run(vfs_name):
 
         if result == "exit":
             break
-
 
 def run_startup(path, vfs_name):
     commands = {
@@ -159,6 +177,11 @@ def run_startup(path, vfs_name):
 
             print(f"{vfs_name}>{line}")
             parts = parse_command(line)
+
+            if not parts:
+                print("Startup script error")
+                return False
+
             result = do_comm(parts, commands)
 
             if result == "error":
@@ -168,8 +191,41 @@ def run_startup(path, vfs_name):
             if result == "exit":
                 return True
 
-    return True
-        
+    return True       
+
+def valid_node(node):
+    if not isinstance(node, dict) or not isinstance(node.get("name"), str):
+        return False
+
+    if node.get("type") == "file":
+        return isinstance(node.get("content"), str)
+
+    if node.get("type") == "directory":
+        children = node.get("children")
+
+        if not isinstance(children, list):
+            return False
+
+        return all(valid_node(child) for child in children)
+
+    return False
+
+def load_vfs(path):
+    if not path:
+        return default_vfs()
+
+    try:
+        with open(path, "r", encoding="utf-8") as file:
+            vfs = json.load(file)
+    except (OSError, json.JSONDecodeError):
+        print("VFS load error")
+        return None
+
+    if not valid_node(vfs):
+        print("VFS format error")
+        return None
+
+    return vfs
 
 def main():
     args = parse_args()
@@ -177,25 +233,31 @@ def main():
     config = read_config(args.config)
     config_vfs, config_startup = get_config_values(config)
 
-    vfs, startup = priority(
+    vfs_path, startup = priority(
         args,
         config_vfs,
         config_startup
     )
 
+    vfs = load_vfs(vfs_path)
+
+    if vfs is None:
+        return 1
+
+    if vfs_path:
+        vfs_name = os.path.basename(vfs_path)
+    else:
+        vfs_name = "default-vfs"
+
     print("Параметры запуска:")
-    print(f"VFS: {vfs}")
+    print(f"VFS: {vfs_path or 'default'}")
     print(f"Стартовый скрипт: {startup}")
     print(f"Конфигурационный файл: {args.config}")
 
-    if not vfs:
-        print("VFS is not specified")
-        return 1
-
     if startup:
-        run_startup(startup, vfs)
+        run_startup(startup, vfs_name)
 
-    return run(vfs)
+    return run(vfs_name)
 
 if __name__ == "__main__":
     main()

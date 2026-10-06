@@ -1,0 +1,21 @@
+{
+    "name": "root",
+    "type": "directory",
+    "children": [
+        {
+            "name": "first.txt",
+            "type": "file",
+            "content": "First file"
+        },
+        {
+            "name": "second.txt",
+            "type": "file",
+            "content": "Second file"
+        },
+        {
+            "name": "third.txt",
+            "type": "file",
+            "content": "Third file"
+        }
+    ]
+}

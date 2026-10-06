@@ -1,0 +1,23 @@
+{
+    "name": "root",
+    "type": "directory",
+    "children": [
+        {
+            "name": "home",
+            "type": "directory",
+            "children": [
+                {
+                    "name": "documents",
+                    "type": "directory",
+                    "children": [
+                        {
+                            "name": "file.txt",
+                            "type": "file",
+                            "content": "Hello"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
