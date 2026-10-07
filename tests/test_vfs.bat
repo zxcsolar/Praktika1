@@ -1,2 +1,2 @@
 @echo off
-python src\console.py --vfs test-vfs
+python src\console.py --vfs src\vfs.json

@@ -1,2 +1,2 @@
 @echo off
-python src\console.py --config config.ini --vfs command-vfs
+python src\console.py --config config.ini --vfs src\vfs_min.json
