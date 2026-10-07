@@ -5,17 +5,20 @@
         {
             "name": "first.txt",
             "type": "file",
-            "content": "First file"
+            "encoding": "base64",
+            "content": "Rmlyc3QgZmlsZQ=="
         },
         {
             "name": "second.txt",
             "type": "file",
-            "content": "Second file"
+            "encoding": "base64",
+            "content": "U2Vjb25kIGZpbGU="
         },
         {
             "name": "third.txt",
             "type": "file",
-            "content": "Third file"
+            "encoding": "base64",
+            "content": "VGhpcmQgZmlsZQ=="
         },
         {
             "name": "binary.bin",
