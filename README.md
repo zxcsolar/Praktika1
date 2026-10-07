@@ -1,13 +1,14 @@
 # Эмулятор командной оболочки UNIX-подобной ОС.
 
 ## Запуск
+
 ```bat
-run.bat demo-vfs
+run.bat --vfs src\vfs.json --startup tests\startup.txt --config config.ini
 ```
 или
 
 ```bat
-python src\console.py --vfs demo-vfs
+python src\console.py --vfs src\vfs.json --startup tests\startup.txt --config config.ini
 ```
 
 ## Реализованные команды:
