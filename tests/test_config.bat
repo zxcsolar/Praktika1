@@ -1,2 +1,2 @@
 @echo off
-python src\console.py --config config.ini
+python "%~dp0\..\src\console.py" --config "%~dp0\..\config.ini"

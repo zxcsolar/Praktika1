@@ -3,6 +3,8 @@ import os
 import argparse
 import configparser
 import json
+import base64
+import binascii
 
 def parse_command(line):
     parts = []
@@ -95,18 +97,6 @@ def default_vfs():
         "children": []
     }
 
-
-def load_vfs(path):
-    if not path:
-        return default_vfs()
-
-    try:
-        with open(path, "r", encoding="utf-8") as file:
-            return json.load(file)
-    except (OSError, json.JSONDecodeError):
-        print("VFS load error")
-        return None
-
 def priority(args, config_vfs, config_startup):
     if args.vfs:
         vfs = args.vfs
@@ -155,6 +145,23 @@ def run(vfs_name):
 
         if result == "exit":
             break
+
+def decode_base64(node):
+    if node["type"] == "file":
+        if node.get("encoding") != "base64":
+            return True
+
+        try:
+            node["content"] = base64.b64decode(
+                node["content"],
+                validate=True
+            )
+        except (ValueError, binascii.Error):
+            return False
+
+        return True
+
+    return all(decode_base64(child) for child in node["children"])
 
 def run_startup(path, vfs_name):
     commands = {
@@ -223,6 +230,10 @@ def load_vfs(path):
 
     if not valid_node(vfs):
         print("VFS format error")
+        return None
+
+    if not decode_base64(vfs):
+        print("VFS base64 error")
         return None
 
     return vfs

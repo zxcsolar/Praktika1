@@ -1,2 +1,2 @@
 @echo off
-python src\console.py --vfs src\vfs.json --startup tests\startup.txt
+python "%~dp0\..\src\console.py" --vfs "%~dp0\..\src\vfs.json" --startup "%~dp0\..\tests\startup.txt"

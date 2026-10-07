@@ -1,2 +1,2 @@
 @echo off
-echo exit | python src\console.py --vfs src\vfs_files.json
+echo exit | python "%~dp0\..\src\console.py" --vfs "%~dp0\..\src\vfs_files.json"
